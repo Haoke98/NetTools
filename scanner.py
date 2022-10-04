@@ -20,7 +20,6 @@ MAGIC_MESSAGE = "PYTHON-RULES!"
 
 # 批量发送UDP数据包
 def udp_sender(subnet, magicMsg):
-    time.sleep(5)
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sender:
         for ip in ipaddress.ip_network(subnet).hosts():
             sender.sendto(bytes(magicMsg, 'utf-8'), (str(ip), 65212))
