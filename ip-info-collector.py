@@ -20,7 +20,7 @@ STARTED_AT = datetime.datetime.now()
 
 def get_progress():
     dlt = datetime.datetime.now() - STARTED_AT
-    return f"进度：%0.4f%% ( {COMPLETED} / {TOTAL} ), 已运行：{dlt}" % (COMPLETED / TOTAL * 100)
+    return f"进度：%0.4f%% ( {COMPLETED} / {TOTAL} ), 已运行：{dlt}, " % (COMPLETED / TOTAL * 100)
 
 
 def get_ip_info(ip):
@@ -43,9 +43,10 @@ def get_ip_info(ip):
 
 def insert(ip):
     global COMPLETED
+    ip_str = ip[0].compressed
     con = sqlite3.connect("ips.db")
     updatedAt = datetime.datetime.now()
-    values = (ip, updatedAt) + get_ip_info(ip)
+    values = (ip_str, updatedAt) + get_ip_info(ip_str)
     con.execute(
         'INSERT INTO ips(ip,updatedAt,country,countryCode,province,city,district,isp,operator,lon,lat) values(?,?,?,?,?,?,?,?,?,?,?)',
         values)
@@ -57,12 +58,13 @@ def insert(ip):
 
 def update(ip):
     global COMPLETED
+    ip_str = ip[0].compressed
     con = sqlite3.connect("ips.db")
     updatedAt = datetime.datetime.now()
-    values = (updatedAt,) + get_ip_info(ip)
+    values = (updatedAt,) + get_ip_info(ip_str)
     con.execute(
         '''UPDATE ips SET updatedAt=?,country=?,countryCode=?,province=?,city=?,district=?,isp=?,operator=?,lon=?,lat=? WHERE ip= ?''',
-        values + (ip,))
+        values + (ip_str,))
     con.commit()
     con.close()
     COMPLETED += 1
